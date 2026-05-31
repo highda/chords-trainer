@@ -126,6 +126,33 @@
             </div>
           </div>
         </div>
+
+        <div class="panel compact-panel synth-panel">
+          <div class="panel-label">Instrument</div>
+          <div class="synth-grid">
+            <label class="synth-control" for="synthBrightness">
+              <span class="synth-control-label">Brightness</span>
+              <div class="synth-value-row">
+                <span class="synth-value" id="synthBrightnessValue">100</span>
+              </div>
+              <input type="range" id="synthBrightness" min="0" max="100" value="100">
+            </label>
+            <label class="synth-control" for="synthBody">
+              <span class="synth-control-label">Body</span>
+              <div class="synth-value-row">
+                <span class="synth-value" id="synthBodyValue">10</span>
+              </div>
+              <input type="range" id="synthBody" min="0" max="100" value="10">
+            </label>
+            <label class="synth-control" for="synthPickNoise">
+              <span class="synth-control-label">Pick</span>
+              <div class="synth-value-row">
+                <span class="synth-value" id="synthPickNoiseValue">80</span>
+              </div>
+              <input type="range" id="synthPickNoise" min="0" max="100" value="80">
+            </label>
+          </div>
+        </div>
       </div>
 
       <div class="chord-stage" id="chordStage">

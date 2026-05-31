@@ -37,6 +37,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const focusModeToggleEl = document.getElementById("focusModeToggle");
   const focusChordSelectEl = document.getElementById("focusChordSelect");
   const fretboardMount = document.getElementById("fretboardMount");
+  const synthBrightnessEl = document.getElementById("synthBrightness");
+  const synthBrightnessValueEl = document.getElementById("synthBrightnessValue");
+  const synthBodyEl = document.getElementById("synthBody");
+  const synthBodyValueEl = document.getElementById("synthBodyValue");
+  const synthPickNoiseEl = document.getElementById("synthPickNoise");
+  const synthPickNoiseValueEl = document.getElementById("synthPickNoiseValue");
   const paneEls = [...document.querySelectorAll("[data-mobile-pane]")];
   const tabEls = [...document.querySelectorAll("[data-tab-target]")];
   const speedupDom = {
@@ -56,6 +62,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const animateProgress = initProgressBar();
   const timer = initSessionTimer();
   initSpeedup(speedupDom);
+
+  function syncSynthUi() {
+    synthBrightnessEl.value = String(state.synthBrightness);
+    synthBrightnessValueEl.textContent = String(state.synthBrightness);
+    synthBodyEl.value = String(state.synthBody);
+    synthBodyValueEl.textContent = String(state.synthBody);
+    synthPickNoiseEl.value = String(state.synthPickNoise);
+    synthPickNoiseValueEl.textContent = String(state.synthPickNoise);
+  }
 
   function setMobileTab(tabName) {
     paneEls.forEach((pane) => pane.classList.toggle("is-active", pane.dataset.mobilePane === tabName));
@@ -103,6 +118,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   bpmSliderEl.addEventListener("input", () => {
     state.bpm = Number(bpmSliderEl.value);
     bpmDisplayEl.textContent = String(state.bpm);
+  });
+  synthBrightnessEl.addEventListener("input", () => {
+    state.synthBrightness = Number(synthBrightnessEl.value);
+    synthBrightnessValueEl.textContent = String(state.synthBrightness);
+  });
+  synthBodyEl.addEventListener("input", () => {
+    state.synthBody = Number(synthBodyEl.value);
+    synthBodyValueEl.textContent = String(state.synthBody);
+  });
+  synthPickNoiseEl.addEventListener("input", () => {
+    state.synthPickNoise = Number(synthPickNoiseEl.value);
+    synthPickNoiseValueEl.textContent = String(state.synthPickNoise);
   });
   focusModeToggleEl.addEventListener("change", () => {
     state.focusModeEnabled = focusModeToggleEl.checked;
@@ -171,7 +198,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       animateProgress(beatDuration * 2);
     } else if (beat === 2) {
       const entry = state.selectedChords.get(state.currentChordId);
-      playChord(entry?.notes || [], strumDurationSec);
+      playChord(entry?.notes || [], strumDurationSec, 0.55, {
+        brightness: state.synthBrightness,
+        body: state.synthBody,
+        pickNoise: state.synthPickNoise,
+      });
       playClick(true);
       chordDisplayEl.classList.add("playing");
       chordStageEl.classList.add("playing");
@@ -242,6 +273,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   warningEl.classList.toggle("visible", state.selectedChords.size < 2);
   syncFocusOptions();
+  syncSynthUi();
   renderBrowseChord();
   setMobileTab("pick");
 });

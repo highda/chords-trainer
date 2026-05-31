@@ -22,6 +22,9 @@ export const state = {
   sessionStartTime: 0,
   sessionElapsedMs: 0,
   timerInterval: null,
+  synthBrightness: 100,
+  synthBody: 10,
+  synthPickNoise: 80,
 };
 
 export function chordId(key, suffix) {
