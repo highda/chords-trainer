@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const synthPickNoiseValueEl = document.getElementById("synthPickNoiseValue");
   const paneEls = [...document.querySelectorAll("[data-mobile-pane]")];
   const tabEls = [...document.querySelectorAll("[data-tab-target]")];
+  const collapsibleEls = [...document.querySelectorAll("[data-collapsible]")];
   const speedupDom = {
     speedupPanelEl: document.getElementById("speedupPanel"),
     speedupToggle: document.getElementById("speedupToggle"),
@@ -81,10 +82,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  function setCollapsibleState(el, expanded) {
+    el.classList.toggle("is-collapsed", !expanded);
+    const toggle = el.querySelector("[data-collapsible-toggle]");
+    if (toggle) toggle.setAttribute("aria-expanded", String(expanded));
+  }
+
+  function syncCollapsiblesForViewport() {
+    const mobile = window.matchMedia("(max-width: 760px)").matches;
+    collapsibleEls.forEach((el) => {
+      if (!mobile) {
+        setCollapsibleState(el, true);
+        return;
+      }
+      const shouldOpen = el.hasAttribute("data-collapsible-default-open");
+      setCollapsibleState(el, shouldOpen);
+    });
+  }
+
   tabEls.forEach((tab) => {
     tab.addEventListener("click", () => {
       if (state.isRunning && tab.dataset.tabTarget === "pick") return;
       setMobileTab(tab.dataset.tabTarget);
+    });
+  });
+
+  collapsibleEls.forEach((el) => {
+    const toggle = el.querySelector("[data-collapsible-toggle]");
+    if (!toggle) return;
+    toggle.addEventListener("click", () => {
+      if (!window.matchMedia("(max-width: 760px)").matches) return;
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
+      setCollapsibleState(el, !expanded);
     });
   });
 
@@ -274,6 +303,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   warningEl.classList.toggle("visible", state.selectedChords.size < 2);
   syncFocusOptions();
   syncSynthUi();
+  syncCollapsiblesForViewport();
+  window.addEventListener("resize", syncCollapsiblesForViewport);
   renderBrowseChord();
   setMobileTab("pick");
 });

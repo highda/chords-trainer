@@ -28,9 +28,13 @@
         <div id="chordSelector"></div>
       </div>
 
-      <div class="panel">
-        <div class="panel-label">Mode</div>
-        <div class="focus-panel">
+      <div class="panel mobile-collapsible" data-collapsible>
+        <button class="mobile-section-toggle" type="button" data-collapsible-toggle aria-expanded="false">
+          <span class="panel-label">Mode</span>
+          <span class="mobile-section-chevron">▼</span>
+        </button>
+        <div class="mobile-section-body" data-collapsible-body>
+          <div class="focus-panel">
           <label class="toggle-wrap">
             <input type="checkbox" id="focusModeToggle">
             <div class="toggle-track"></div>
@@ -42,6 +46,7 @@
             </div>
             <select id="focusChordSelect" class="focus-select" aria-label="Focused chord"></select>
           </div>
+        </div>
         </div>
       </div>
 
@@ -99,18 +104,27 @@
 
     <section class="play-pane app-pane" id="playPane" data-mobile-pane="play">
       <div class="play-topbar">
-        <div class="panel compact-panel tempo-panel">
-          <div class="panel-label">Tempo</div>
-          <div class="bpm-display">
+        <div class="panel compact-panel tempo-panel mobile-collapsible" data-collapsible data-collapsible-default-open>
+          <button class="mobile-section-toggle" type="button" data-collapsible-toggle aria-expanded="true">
+            <span class="panel-label">Tempo</span>
+            <span class="mobile-section-chevron">▼</span>
+          </button>
+          <div class="mobile-section-body" data-collapsible-body>
+            <div class="bpm-display">
             <div class="bpm-number" id="bpmDisplay">80</div>
             <div class="bpm-unit">BPM</div>
+            </div>
+            <input type="range" id="bpmSlider" min="40" max="200" value="80">
           </div>
-          <input type="range" id="bpmSlider" min="40" max="200" value="80">
         </div>
 
-        <div class="panel compact-panel beat-panel">
-          <div class="panel-label">Beat</div>
-          <div class="beat-card-copy">
+        <div class="panel compact-panel beat-panel mobile-collapsible" data-collapsible data-collapsible-default-open>
+          <button class="mobile-section-toggle" type="button" data-collapsible-toggle aria-expanded="true">
+            <span class="panel-label">Beat</span>
+            <span class="mobile-section-chevron">▼</span>
+          </button>
+          <div class="mobile-section-body" data-collapsible-body>
+            <div class="beat-card-copy">
             <div class="beat-row">
               <span class="beat-label">Measure</span>
               <div class="beat-dots" id="beatDots">
@@ -125,11 +139,16 @@
               BEATS 3–4: STRUM + HOLD
             </div>
           </div>
+          </div>
         </div>
 
-        <div class="panel compact-panel synth-panel">
-          <div class="panel-label">Instrument</div>
-          <div class="synth-grid">
+        <div class="panel compact-panel synth-panel mobile-collapsible" data-collapsible>
+          <button class="mobile-section-toggle" type="button" data-collapsible-toggle aria-expanded="false">
+            <span class="panel-label">Instrument</span>
+            <span class="mobile-section-chevron">▼</span>
+          </button>
+          <div class="mobile-section-body" data-collapsible-body>
+            <div class="synth-grid">
             <label class="synth-control" for="synthBrightness">
               <span class="synth-control-label">Brightness</span>
               <div class="synth-value-row">
@@ -151,6 +170,7 @@
               </div>
               <input type="range" id="synthPickNoise" min="0" max="100" value="80">
             </label>
+          </div>
           </div>
         </div>
       </div>
