@@ -1,0 +1,3 @@
+[submodule "vendor/chords-db"]
+	path = vendor/chords-db
+	url = https://github.com/tombatossals/chords-db.git

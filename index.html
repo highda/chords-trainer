@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chord Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-copy">
+      <h1>CHORD TRAINER</h1>
+      <span class="sub">Guitar Practice Tool</span>
+    </div>
+    <div class="mobile-tabs" id="mobileTabs" role="tablist" aria-label="App sections">
+      <button class="mobile-tab active" id="pickTabBtn" data-tab-target="pick" role="tab" aria-selected="true">Pick</button>
+      <button class="mobile-tab" id="playTabBtn" data-tab-target="play" role="tab" aria-selected="false">Play</button>
+    </div>
+    <div class="session-timer" id="sessionTimer">0:00</div>
+  </div>
+
+  <div class="app-shell">
+    <section class="config-pane app-pane is-active" id="pickPane" data-mobile-pane="pick">
+      <div class="panel panel-fill selector-panel">
+        <div class="panel-label">Select Chords to Train</div>
+        <div id="chordSelector"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-label">Mode</div>
+        <div class="focus-panel">
+          <label class="toggle-wrap">
+            <input type="checkbox" id="focusModeToggle">
+            <div class="toggle-track"></div>
+          </label>
+          <div class="focus-controls">
+            <div>
+              <div class="focus-title">CHORD FOCUS</div>
+              <div class="focus-sub">Alternate focused chord with random non-focused chord</div>
+            </div>
+            <select id="focusChordSelect" class="focus-select" aria-label="Focused chord"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="speedup-panel" id="speedupPanel">
+        <div class="speedup-header" id="speedupHeader">
+          <label class="toggle-wrap" onclick="event.stopPropagation()">
+            <input type="checkbox" id="speedupToggle">
+            <div class="toggle-track"></div>
+          </label>
+          <div class="speedup-title">GRADUAL SPEED-UP</div>
+          <span style="font-size:0.6rem;color:var(--muted);letter-spacing:1px;" id="speedupChevron">▼</span>
+        </div>
+        <div class="speedup-body" id="speedupBody">
+          <div class="speedup-params">
+            <div class="param-group">
+              <div class="param-label">Speed Up Every</div>
+              <div class="param-value-row">
+                <div class="param-num" id="suBarsVal">4</div>
+                <div class="param-unit">BARS</div>
+              </div>
+              <input type="range" class="param-input" id="suBarsSlider" min="1" max="16" value="4">
+            </div>
+            <div class="param-group">
+              <div class="param-label">Increase By</div>
+              <div class="param-value-row">
+                <div class="param-num" id="suStepVal">5</div>
+                <div class="param-unit">BPM</div>
+              </div>
+              <input type="range" class="param-input" id="suStepSlider" min="1" max="20" value="5">
+            </div>
+            <div class="param-group">
+              <div class="param-label">Stop At</div>
+              <div class="param-value-row">
+                <div class="param-num" id="suMaxVal">120</div>
+                <div class="param-unit">BPM</div>
+              </div>
+              <input type="range" class="param-input" id="suMaxSlider" min="60" max="200" value="120">
+            </div>
+          </div>
+          <div class="speedup-track" id="speedupTrack">
+            <div class="speedup-track-label">
+              <span>START <span style="font-family:'Bebas Neue';font-size:0.85rem;letter-spacing:1px;" id="suStartLabel">80</span></span>
+              <span class="current-bpm" id="suCurrentBpm">80 BPM</span>
+              <span>MAX <span style="font-family:'Bebas Neue';font-size:0.85rem;letter-spacing:1px;" id="suMaxLabel">120</span></span>
+            </div>
+            <div class="speedup-bar-bg">
+              <div class="speedup-bar-fill" id="suBarFill"></div>
+            </div>
+            <div class="speedup-ticks" id="suTicks"></div>
+            <div class="speedup-bars-counter" id="suBarsCounter">Bar <span id="suBarCurrent">1</span> of <span id="suBarUntilNext">4</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="play-pane app-pane" id="playPane" data-mobile-pane="play">
+      <div class="play-topbar">
+        <div class="panel compact-panel tempo-panel">
+          <div class="panel-label">Tempo</div>
+          <div class="bpm-display">
+            <div class="bpm-number" id="bpmDisplay">80</div>
+            <div class="bpm-unit">BPM</div>
+          </div>
+          <input type="range" id="bpmSlider" min="40" max="200" value="80">
+        </div>
+
+        <div class="panel compact-panel beat-panel">
+          <div class="panel-label">Beat</div>
+          <div class="beat-card-copy">
+            <div class="beat-row">
+              <span class="beat-label">Measure</span>
+              <div class="beat-dots" id="beatDots">
+                <div class="beat-dot beat1" id="dot0"></div>
+                <div class="beat-dot" id="dot1"></div>
+                <div class="beat-dot" id="dot2"></div>
+                <div class="beat-dot" id="dot3"></div>
+              </div>
+            </div>
+            <div class="beat-legend">
+              BEATS 1–2: CHANGE CHORD<br>
+              BEATS 3–4: STRUM + HOLD
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chord-stage" id="chordStage">
+        <div class="phase-indicator" id="phaseIndicator">WAITING</div>
+        <div class="chord-stage-main">
+          <div class="chord-name" id="chordDisplay">—</div>
+          <div id="fretboardMount"></div>
+        </div>
+        <div class="next-preview" id="nextPreview"></div>
+        <div class="chord-hint" id="chordHint">Press START to begin</div>
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div class="play-actions">
+        <div class="warning" id="warning">Select at least 2 chords to start</div>
+        <button class="start-btn" id="startBtn">
+          <span id="startBtnText">▶ START</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
