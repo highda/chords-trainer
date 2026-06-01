@@ -1,0 +1,19 @@
+name: Notify Pages Repo Submodule Sync
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch submodule sync to highda.github.io
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAGES_SYNC_TOKEN }}
+          repository: highda/highda.github.io
+          event-type: submodule-sync
+          client-payload: >-
+            {"source_repo":"${{ github.repository }}","source_ref":"${{ github.ref_name }}","source_sha":"${{ github.sha }}"}
