@@ -32,7 +32,13 @@ export function positionToNotes(position) {
     .filter((x) => x.fret >= 0)
     .map(({ fret, i }) => {
       const midi = OPEN_MIDI[i] + (fret === 0 ? 0 : base + fret);
-      return { f: 440 * 2 ** ((midi - 69) / 12), g: 0.65 };
+      return {
+        f: 440 * 2 ** ((midi - 69) / 12),
+        g: 0.65,
+        stringIndex: i,
+        fret,
+        isOpen: fret === 0,
+      };
     });
 }
 

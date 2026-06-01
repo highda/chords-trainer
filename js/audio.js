@@ -17,10 +17,25 @@ export function playChord(notes, strumDuration, volume = 0.55, synthOptions = {}
   const settings = normalizeSynthOptions(synthOptions);
   const now = ctx.currentTime;
   const strumDelay = 0.012 + (1 - settings.pickNoise) * 0.008;
+  const totalStrings = 6;
 
   notes.forEach((note, i) => {
     const t0 = now + i * strumDelay;
-    playStringVoice(ctx, note.f, note.g * volume, t0, strumDuration, settings, i, notes.length);
+    const stringIndex = Number.isFinite(note?.stringIndex) ? note.stringIndex : i;
+    const fret = Number.isFinite(note?.fret) ? note.fret : null;
+    const isOpen = Boolean(note?.isOpen);
+    const fretDamping = fret && fret > 0 ? Math.max(0.8, 1 - fret * 0.015) : 1;
+    playStringVoice(
+      ctx,
+      note.f,
+      note.g * volume * fretDamping,
+      t0,
+      strumDuration,
+      settings,
+      stringIndex,
+      totalStrings,
+      { isOpen, fret }
+    );
   });
 }
 
@@ -67,13 +82,15 @@ function setupMasterChain(ctx) {
   masterOut = comp;
 }
 
-function playStringVoice(ctx, frequency, peak, startTime, strumDuration, settings, stringIndex, totalStrings) {
+function playStringVoice(ctx, frequency, peak, startTime, strumDuration, settings, stringIndex, totalStrings, voicing = {}) {
   const stringBus = ctx.createGain();
   const bodyPeak = ctx.createBiquadFilter();
   const bodyAir = ctx.createBiquadFilter();
   const tone = ctx.createBiquadFilter();
   const outGain = ctx.createGain();
   const panner = ctx.createStereoPanner();
+  const isOpen = Boolean(voicing.isOpen);
+  const fret = Number.isFinite(voicing.fret) ? voicing.fret : 0;
 
   bodyPeak.type = "peaking";
   bodyPeak.frequency.value = 180;
@@ -86,10 +103,11 @@ function playStringVoice(ctx, frequency, peak, startTime, strumDuration, setting
   bodyAir.gain.value = 1 + settings.body * 3.5;
 
   tone.type = "lowpass";
-  tone.frequency.value = 2200 + settings.brightness * 5600;
+  tone.frequency.value = 2200 + settings.brightness * 5600 + (isOpen ? 220 : 0);
   tone.Q.value = 0.3;
 
-  const decayTime = 0.95 + (1 - frequency / 700) * 0.7 + settings.body * 0.4;
+  const fretDamping = fret > 0 ? Math.min(0.22, fret * 0.015) : 0;
+  const decayTime = 0.95 + (1 - frequency / 700) * 0.7 + settings.body * 0.4 + (isOpen ? 0.12 : 0) - fretDamping;
   const releaseTime = Math.max(0.75, Math.min(2.1, strumDuration * 1.8 + decayTime));
 
   outGain.gain.setValueAtTime(0.0001, startTime);
